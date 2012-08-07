@@ -70,30 +70,30 @@ method2,
 
 #include<windows.h> 				//ダイアログBOXを出して警告					
 
-#define flag_all_one pow(2,9)-1
+#define flag_all_one (1 << 9)-1
 
 //グローバル変数の定義
 int flag[9][9] = {0};																//flag配列
-bool flagb[9][9][9] = {0};																//flag配列
+bool bFlag[9][9][9] = {0};																//flag配列
 int ans[9][9] = {0};
 
 ///////////サブルーチン
 
 
 //10進数→2進数
-int bin(int dex){							
-	int bit = 0;
-	for(int i=0; i<9; i++){
-		bit += std::pow(10, i) * ( (dex >> i) % 2);
-	}
-	return bit;
-}
+//int bin(int dex){							
+//	int bit = 0;
+//	for(int i=0; i<9; i++){
+//		bit += pow(10.0, i) * ( (dex >> i) % 2);
+//	}
+//	return bit;
+//}
 
 //10進数→2進数→flag number*
 int flag_number(int dex){
 	int bin = 0;
 	for(int i=0; i<9; i++){
-		bin += (i+1) * pow(10, i) * ( (dex >> i) % 2);
+		bin += (i+1) * pow(10.0, i) * ( (dex >> i) % 2);
 	}
 	return bin;
 }
@@ -115,7 +115,7 @@ void show( int hairetsu[9][9] , int n){
 	for(int i=0; i < 9; i++){
 		for(int j=0; j < 9; j++){
 			if(n<9)		hairetsu[i][j]? std::cout<<std::setw(n)<<hairetsu[i][j]: std::cout<<std::setw(n)<<"_" ; //3項演算子を使用。 0ならば _を出力
-			else		std::cout<<std::setw(n)<<flag_number(hairetsu[i][j]);
+			else		/*printf("",hairetsu[i][j])*/ std::cout<<std::setw(n)<<flag_number(hairetsu[i][j]);
 		}
 		std::cout<<std::endl;
 		if( !(i%3 -2) && 4<n ) std::cout<<"-------------------------------------------------------------------------------------------"<<std::endl;
@@ -140,19 +140,19 @@ int box(int v, int h){ 										//cell→Box      vh
 //BOX+cell2→ t or f
 bool box_cell_tf(int box_number, int v1, int h1){
 
-	if( box(v1, h1) == box_number )	return true;
-	else 					return false;
+	if( box(v1, h1) == box_number )		return true;
+	else 								return false;
 }
 
-//失敗     true or false?　失敗
-int box_tf(int v, int h, int v1, int h1){
-	
-	for(int i=0; i<9; i++){
-		for(int j=0; j<9; j++){
-//			if();
-		}
-	}
-}
+////失敗     true or false?　失敗
+//int box_tf(int v, int h, int v1, int h1){
+//	
+//	for(int i=0; i<9; i++){
+//		for(int j=0; j<9; j++){
+////			if();
+//		}
+//	}
+//}
 
 //その数値は影響範囲に存在するか　（ansの中で矛盾するか？YES->1）			確認 ok
 bool number_tf(int v, int h, int n){
@@ -181,18 +181,18 @@ bool number_tf(int v, int h, int n){
 void flag_elase(int v, int h, int n){						//n桁目 v行 h列 flag消去
 	for(int j=0; j<9; j++){									//横
 		if( (flag[v][j] >> (n-1) )%2 ){
-			flag[v][j] -= pow(2,n-1);
+			flag[v][j] -= (1 << (n-1) );
 		}
 	}
 	for(int i=0; i<9; i++){									//縦
 		if( (flag[i][h] >> (n-1) )%2 ){
-			flag[i][h] -= pow(2,n-1);
+			flag[i][h] -= (1 << (n-1) );
 		}
 	}
 	for (int i=0; i<9 ;i++ ){							//box_cell_tf確認  ok
 		for(int j=0; j<9; j++){
 			if(( box_cell_tf( box(v,h), i, j)) && ( (flag[i][j] >> (n-1) )%2 ) )
-				flag[i][j] -= pow(2,n-1);
+				flag[i][j] -=(1 << (n-1));
 		}
 	}
 	flag[v][h] = 0;										//その場所のflagをall0にする
@@ -282,7 +282,7 @@ bool method2(){
 	for(int i=0; i<9; i++){
 		for(int j=0; j<9; j++){
 			for(int k=0; k<9; k++){						//2の倍数と比較
-				if( flag[i][j] == pow(2,k) ) {
+				if( flag[i][j] == (1 << k) ) {
 					flag_elase(i, j, k+1);
 					ans[i][j] = k+1;
 					std::cout<<"method 2 : matrix "<<i+1<<j+1<<" -> "<<k+1<<std::endl;			//n桁目 v行 h列 flag消去
@@ -294,28 +294,31 @@ bool method2(){
 	return (false);
 }
 
-//解法3 空き直線問題 box streight
-bool method3(){
-	int flag_or, s;
-	for(int h=0; h<9; h++){				//box
-		flag_or = 0;
-		for(int i=0; i<9; i++){					//v
-			for(int j=0; j<9; j++){						//h
-				if( box_cell_tf(h, i, j) ){ 
-					//flag_or |= flag[i][j] ;		//boxの中のフラグを確認 Box内の全てのフラグをflag_orに入れる
-					flag_or += bin(flag[i][j]);
-				}
-				
-			}
-		}
-		for(int i=0;i<9; i++){				//Boxの中で注目する数字
-			int temp = (flag_or / (i+1) *10 )%10;
-			if( 2 <= temp && temp <= 3  ){				// flag_or 2以上3以下のとき
-				
-			}
-		}
-	}
-}
+////解法3 空き直線問題 box streight
+//bool method3(){
+//	bool ret = false;
+//	int flag_or;
+//	for(int h=0; h<9; h++){				//box
+//		flag_or = 0;
+//		for(int i=0; i<9; i++){					//v
+//			for(int j=0; j<9; j++){						//h
+//				if( box_cell_tf(h, i, j) ){ 
+//					//flag_or |= flag[i][j] ;		//boxの中のフラグを確認 Box内の全てのフラグをflag_orに入れる
+//					flag_or += bin(flag[i][j]);
+//				}
+//				
+//			}
+//		}
+//		for(int i=0;i<9; i++){				//Boxの中で注目する数字
+//			int temp = (flag_or / (i+1) *10 )%10;
+//			if( 2 <= temp && temp <= 3  ){				// flag_or 2以上3以下のとき
+//				
+//			}
+//		}
+//	}
+//
+//	return ret;
+//}
 
 //解法（最終手段） 再起呼び出しによるバックトラックでの解法 （無理やり感あるれる解き方？それとも仮定→否定の高度な方法？）
 void back_track_method( int v , int h){
@@ -360,8 +363,8 @@ void back_track_method( int v , int h){
 ////////////////////mainルーチン
 int main(void){
 
-	char* qnumber;
-	char* questionN ="question" ;
+	char qnumber[5]		= {"\0"};
+	char questionN[10]	="question" ;
 /* flag all 1**/
 	for(int v=0; v<9; v++){						//すべてのflagを1 =511  Vertical
 		for(int h=0; h<9; h++){					//						Horizon
@@ -371,16 +374,11 @@ int main(void){
 
 /***** 選択 *********/// char stringで詰まった。
 
-/*	std::cout<<"Input Question Number"<<std::endl;
-	cin>>qnumber;
-//	strcat(questionN ,qnumber );
-	(string)questionN += (char)qnumber;
+	std::cout<<"Input Question Number"<<std::endl;
+	std::cin>>qnumber;
+	strcat(questionN , qnumber);
 	std::cout<<questionN<<std::endl<<std::endl;
-*/	
 	
-//	std::cout<<q<<" "<<qnumber<<std::endl;
-
-
 
 /** 問題入力**/
 
@@ -393,13 +391,13 @@ int main(void){
 
 /*** 当てはめ ***/
 	int loop1 = 0,loop2 = 0;
-	
+
+	do{
 		do{
-			do{
-				++loop1;
-			}while( method1() )	;
-			 ++loop2;
-		}while( method2() ) ;
+			++loop1;
+		}while( method1() )	;
+		 ++loop2;
+	}while( method2() ) ;
 	
 	
 	std::cout<<"loop:"<<loop1<<" "<<loop2<<" -> "<<loop1+loop2<<std::endl;
