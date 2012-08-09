@@ -115,7 +115,8 @@ void show( int hairetsu[9][9] , int n){
 	for(int i=0; i < 9; i++){
 		for(int j=0; j < 9; j++){
 			if(n<9)		hairetsu[i][j]? std::cout<<std::setw(n)<<hairetsu[i][j]: std::cout<<std::setw(n)<<"_" ; //3項演算子を使用。 0ならば _を出力
-			else		/*printf("",hairetsu[i][j])*/ std::cout<<std::setw(n)<<flag_number(hairetsu[i][j]);
+			//else		/*printf("",hairetsu[i][j])*/ std::cout<<std::setw(n)<<flag_number(hairetsu[i][j]);
+			else		std::cout<<std::setw(n)<<flag_number(hairetsu[i][j]);
 		}
 		std::cout<<std::endl;
 		if( !(i%3 -2) && 4<n ) std::cout<<"-------------------------------------------------------------------------------------------"<<std::endl;
@@ -199,8 +200,9 @@ void flag_elase(int v, int h, int n){						//n桁目 v行 h列 flag消去
 }
 
 //cell vhのフラグ調査 数値nは1か0か？
-int flag_tr(int v, int h, int n){						
+int is_flag(int v, int h, int n){						
 	if( (flag[v][h] >> (n-1) ) %2 ) return true;
+	return false;
 }
 
 //box1 cell3 -> all cell 0 2
@@ -215,6 +217,7 @@ int cell_bcell( int box_number, int box_cell_number , int which ){
 			}
 		}
 	}
+	return false;
 }
 
 //file iostream fstream
@@ -365,6 +368,7 @@ int main(void){
 
 	char qnumber[5]		= {"\0"};
 	char questionN[10]	="question" ;
+	char c_text[15]		= {"\0"};
 /* flag all 1**/
 	for(int v=0; v<9; v++){						//すべてのflagを1 =511  Vertical
 		for(int h=0; h<9; h++){					//						Horizon
@@ -376,13 +380,15 @@ int main(void){
 
 	std::cout<<"Input Question Number"<<std::endl;
 	std::cin>>qnumber;
-	strcat(questionN , qnumber);
+	sprintf_s(c_text, sizeof(c_text) , "%s%s", questionN, qnumber);
+//	strcat(questionN , qnumber);
 	std::cout<<questionN<<std::endl<<std::endl;
 	
 
 /** 問題入力**/
 
-	read_file( "question5.txt" );
+	read_file( questionN );
+	//read_file( "question5.txt" );
 	
 	std::cout<<"question:"<<std::endl;
 	show( ans ,2 );
