@@ -396,17 +396,19 @@ int main(void){
 	show( flag ,10);
 
 /*** “–‚Ä‚Í‚ß ***/
-	int loop1 = 0,loop2 = 0;
 
-	do{
-		do{
-			++loop1;
-		}while( method1() )	;
-		 ++loop2;
-	}while( method2() ) ;
-	
-	
-	std::cout<<"loop:"<<loop1<<" "<<loop2<<" -> "<<loop1+loop2<<std::endl;
+	while( method1() || method2() ){}
+
+	//int loop1 = 0,loop2 = 0;
+	//do{
+	//	do{
+	//		++loop1;
+	//	}while( method1() )	;
+	//	 ++loop2;
+	//}while( method2() ) ;
+	//
+	//
+	//std::cout<<"loop:"<<loop1<<" "<<loop2<<" -> "<<loop1+loop2<<std::endl;
 	
 //	while( method1() || method2() );																//method 1
 //																							ª
