@@ -13,18 +13,6 @@ extern int flag[9][9];		//flag配列
 extern bool bFlag[9][9][9];	//flag配列
 extern int ans[9][9];
 
-///////////サブルーチン
-
-
-//10進数→2進数
-//int bin(int dex){							
-//	int bit = 0;
-//	for(int i=0; i<9; i++){
-//		bit += pow(10.0, i) * ( (dex >> i) % 2);
-//	}
-//	return bit;
-//}
-
 //10進数→2進数→flag number*
 int flag_number(int dex){
 	int bin         = 0;
@@ -39,17 +27,6 @@ int flag_number(int dex){
 	}
 	return bin;
 }
-
-////10進数→2進数→flag number* →0_
-//string flag_number_0(int dex){
-//	char zero[9];
-//	int bin = 0;
-//	for(int i=0; i<9; i++){
-////		bin += (i+1) * pow(10, i) * ( (dex >> i) % 2);
-//		 ( (dex >> i) % 2)?zero[i] = (char)i 	 :zero[i] = '_' ;
-//	}
-//	return zero;
-//}
 
 //配列表示の関数 n桁
 void show( int hairetsu[9][9] , int n){				
@@ -269,7 +246,6 @@ void back_track_method( int v , int h){
 			back_track_method(v, h+1);
 		}
 		else if( h >=8 ){		
-//			std::cout<<v<<h<<" ";
 			back_track_method(v+1, 0);
 		}
 		else return;
@@ -278,10 +254,7 @@ void back_track_method( int v , int h){
 		for( int i=0; i<9; i++){							//どれかおいてみる
 			if( ( flag[v][h] >> i)%2 && !is_num_influence(v, h, i+1) ) {		//flagを見て一番小さい数字が1 ∧ 矛盾がないならば
 				ans[v][h] = i+1;										//数値を入れる
-//				show(ans, 2);
-//				std::cout<<v<<h<<"-"<<i<<"="<<ans[v][h]<<std::endl;
 				if( h < 8 ){
-//					std::cout<<v<<h<<" ";
 					back_track_method(v, h+1);
 				}
 				else if( h ==8 ){
@@ -299,4 +272,5 @@ void back_track_method( int v , int h){
 			ans[v][h] = 0;
 		}
 	}
+    return;
 }

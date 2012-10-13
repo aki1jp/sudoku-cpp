@@ -131,33 +131,4 @@ int main(void){
 
 	return 0;
 
-
-
-
-// 	std::cout<<sizeof(short)<<std::endl<<sizeof(int)<<std::endl;		//size確認 ok
-
-/*
-	for (int i=0; i<9 ;i++ ){							//box確認 ok
-		for(int j=0; j<9; j++){
-			std::cout<<std::setw(2)<<box(i, j);
-		}
-		std::cout<<std::endl;
-	}
-
-	for (int i=0; i<9 ;i++ ){							//box_cell_tf確認 ok
-		for(int j=0; j<9; j++){
-			std::cout<<std::setw(2)<<box_cell_tf(3, i, j);
-		}
-		std::cout<<std::endl;
-	}
-*/
-	
-/* 演算子の確認
-	int x=8;
-	std::cout<<( x<<2 )<<std::endl		//ビット移動
-		<<( x&2  )<<std::endl		//ビット論理積
-		<<( x|2  )<<std::endl		//ビット論理和
-		<<( x^2  )<<std::endl		//排他的論理和	
-		<<( x * 2 )<<std::endl;	
-*/	
 }
