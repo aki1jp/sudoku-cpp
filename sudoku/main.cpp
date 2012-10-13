@@ -66,9 +66,9 @@ method2,
 #include <iostream>
 #include "method.h"
 
-int flag[9][9]          = {0};																//flag配列
-bool bFlag[9][9][9]     = {0};																//flag配列
-int ans[9][9]           = {0};
+int     flag[9][9]      = {0};																//flag配列
+bool    bFlag[9][9][9]  = {0};																//flag配列
+int     ans[9][9]       = {0};
 
 ////////////////////mainルーチン
 int main(void){
@@ -128,10 +128,6 @@ int main(void){
 	show(flag,10);
 
 	back_track_method(0,0);
-
-//	std::cout<<std::endl<<"ans:"<<std::endl;
-//	show( ans, 2);
-//	show(flag,10);
 
 	return 0;
 

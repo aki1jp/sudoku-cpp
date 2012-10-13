@@ -27,9 +27,15 @@ extern int ans[9][9];
 
 //10進数→2進数→flag number*
 int flag_number(int dex){
-	int bin = 0;
+	int bin         = 0;
+    int digit       = 0;    //桁
+    int digit_flag  = 0;
+
 	for(int i=0; i<9; i++){
-		bin += (i+1) * pow(10.0, i) * ( (dex >> i) % 2);
+        digit       = (int)pow(10.0, i);
+        digit_flag  = ( (dex >> i) % 2);
+
+		bin += (i+1) * digit * digit_flag;      // どの桁のフラグかわかりやすいように(i+1)で掛ける
 	}
 	return bin;
 }
@@ -60,7 +66,7 @@ void show( int hairetsu[9][9] , int n){
 	std::cout<<std::endl;
 }
 
-
+//縦v 横hの位置がどのボックスかを返却
 int box(int v, int h){ 										//cell→Box      vh
 	int x = 0;
 		if(h < 2.5)						x+=1;
@@ -75,24 +81,14 @@ int box(int v, int h){ 										//cell→Box      vh
 }
 
 //BOX+cell2→ t or f
-bool box_cell_tf(int box_number, int v1, int h1){
+bool is_box_in_cell(int box_number, int v1, int h1){
 
 	if( box(v1, h1) == box_number )		return true;
 	else 								return false;
 }
 
-////失敗     true or false?　失敗
-//int box_tf(int v, int h, int v1, int h1){
-//	
-//	for(int i=0; i<9; i++){
-//		for(int j=0; j<9; j++){
-////			if();
-//		}
-//	}
-//}
-
 //その数値は影響範囲に存在するか　（ansの中で矛盾するか？YES->1）			確認 ok
-bool number_tf(int v, int h, int n){
+bool is_num_influence(int v, int h, int n){
 	
 	for(int j=0; j<9; j++){									//横
 		if( ans[v][j]  == n ){
@@ -104,9 +100,9 @@ bool number_tf(int v, int h, int n){
 			return true;
 		}
 	}
-	for (int i=0; i<9 ;i++ ){							//box_cell_tf
+	for (int i=0; i<9 ;i++ ){							//is_box_in_cell
 		for(int j=0; j<9; j++){
-			if(( box_cell_tf( box(v,h), i, j)) && ( ans[i][j] == n ) ){
+			if(( is_box_in_cell( box(v,h), i, j)) && ( ans[i][j] == n ) ){
 				return true;
 			}
 		}
@@ -115,7 +111,7 @@ bool number_tf(int v, int h, int n){
 }
 
 //n桁目 v行 h列 flag消去
-void flag_elase(int v, int h, int n){						//n桁目 v行 h列 flag消去
+void influence_flag_elase(int v, int h, int n){						//n桁目 v行 h列 flag消去
 	for(int j=0; j<9; j++){									//横
 		if( (flag[v][j] >> (n-1) )%2 ){
 			flag[v][j] -= (1 << (n-1) );
@@ -126,9 +122,9 @@ void flag_elase(int v, int h, int n){						//n桁目 v行 h列 flag消去
 			flag[i][h] -= (1 << (n-1) );
 		}
 	}
-	for (int i=0; i<9 ;i++ ){							//box_cell_tf確認  ok
+	for (int i=0; i<9 ;i++ ){							//is_box_in_cell確認  ok
 		for(int j=0; j<9; j++){
-			if(( box_cell_tf( box(v,h), i, j)) && ( (flag[i][j] >> (n-1) )%2 ) )
+			if(( is_box_in_cell( box(v,h), i, j)) && ( (flag[i][j] >> (n-1) )%2 ) )
 				flag[i][j] -=(1 << (n-1));
 		}
 	}
@@ -137,18 +133,22 @@ void flag_elase(int v, int h, int n){						//n桁目 v行 h列 flag消去
 
 //cell vhのフラグ調査 数値nは1か0か？
 int is_flag(int v, int h, int n){						
-	if( (flag[v][h] >> (n-1) ) %2 ) return true;
+	if( (flag[v][h] >> (n-1) ) %2 )
+        return true;
 	return false;
 }
 
 //box1 cell3 -> all cell 0 2
-int cell_bcell( int box_number, int box_cell_number , int which ){		
-	int s=0, b[2]={0};
+int cell_bcell( int box_number, int box_cell_number , int v_h ){		
+	int s       = 0;
+    int b[2]    = {0};
+
 	for( b[0]=0; b[0]<9; b[0]++){
 		for( b[1]=0; b[1]<9; b[1]++){
 			if( box( b[0] , b[1] ) == box_number ) { //ボックスの中だけ選択
-				if( ++s == box_cell_number ) {
-					return ( b[which] );
+                s++;                            //
+				if( s == box_cell_number ) {
+					return ( b[v_h] );
 				}
 			}
 		}
@@ -169,8 +169,8 @@ void read_file( /*void*/char* q ){
 		for(int j=0; j<9; j++){
 			fi>>ans[i][j];
 			if(ans[i][j]){
-					flag_elase(i, j, ans[i][j]);	//もし読み込んだ数字が0以外ならばその数字の影響のフラグ削除
-				}
+				influence_flag_elase(i, j, ans[i][j]);	//もし読み込んだ数字が0以外ならばその数字の影響のフラグ削除
+			}
 		}
 	}
 	fi.close();
@@ -180,7 +180,7 @@ void read_file( /*void*/char* q ){
 
 //解法1
 bool method1(){
-	int s[9][3] = {0};
+	int s[9][3] = {0};                          //
 
 	for (int h=0; h<9; h++ ){								//h番目のBox
 		for(int n=0; n<9; n++){							//s配列初期化
@@ -190,13 +190,15 @@ bool method1(){
 		}
 		for (int i=0; i<9 ;i++ ){							//BOX内 のみ選択
 			for(int j=0; j<9; j++){
-				if( box_cell_tf( h+1, i, j)){				//box flag 1 BOX(h+1)内 のみ選択
-					for(int m=0; m<9; m++){
-						if((flag[i][j] >> m)%2) {
-							s[m][0] +=1;
-							s[m][1] = i;
-							s[m][2] = j; 
-						}
+				if( !is_box_in_cell( h+1, i, j)){				//box flag 1 BOX(h+1)内 のみ選択
+                    continue;
+                }
+
+				for(int m=0; m<9; m++){
+					if((flag[i][j] >> m)%2) {
+						s[m][0] +=1;
+						s[m][1] = i;
+						s[m][2] = j; 
 					}
 				}
 			}
@@ -204,7 +206,7 @@ bool method1(){
 		for(int l=0; l<9; l++){					//sが1ならijに当てはめ
 //			std::cout<<std::setw(3)<<s[l];
 			if(s[l][0]==1){
-				flag_elase(s[l][1], s[l][2], l+1);
+				influence_flag_elase(s[l][1], s[l][2], l+1);
 				ans[ s[l][1] ][ s[l][2] ] = l+1;
 				std::cout<<"method 1 : matrix "<<s[l][1]+1<<s[l][2]+1<<" -> "<<l+1<<std::endl;			//n桁目 v行 h列 flag消去
 				return ( true);
@@ -222,7 +224,7 @@ bool method2(){
 		for(int j=0; j<9; j++){
 			for(int k=0; k<9; k++){						//2の倍数と比較
 				if( flag[i][j] == (1 << k) ) {
-					flag_elase(i, j, k+1);
+					influence_flag_elase(i, j, k+1);
 					ans[i][j] = k+1;
 					std::cout<<"method 2 : matrix "<<i+1<<j+1<<" -> "<<k+1<<std::endl;			//n桁目 v行 h列 flag消去
 					return (true);
@@ -241,7 +243,7 @@ bool method2(){
 //		flag_or = 0;
 //		for(int i=0; i<9; i++){					//v
 //			for(int j=0; j<9; j++){						//h
-//				if( box_cell_tf(h, i, j) ){ 
+//				if( is_box_in_cell(h, i, j) ){ 
 //					//flag_or |= flag[i][j] ;		//boxの中のフラグを確認 Box内の全てのフラグをflag_orに入れる
 //					flag_or += bin(flag[i][j]);
 //				}
@@ -274,7 +276,7 @@ void back_track_method( int v , int h){
 	}
 	else{												//数値が入っていないとき
 		for( int i=0; i<9; i++){							//どれかおいてみる
-			if( ( flag[v][h] >> i)%2 && !number_tf(v, h, i+1) ) {		//flagを見て一番小さい数字が1 ∧ 矛盾がないならば
+			if( ( flag[v][h] >> i)%2 && !is_num_influence(v, h, i+1) ) {		//flagを見て一番小さい数字が1 ∧ 矛盾がないならば
 				ans[v][h] = i+1;										//数値を入れる
 //				show(ans, 2);
 //				std::cout<<v<<h<<"-"<<i<<"="<<ans[v][h]<<std::endl;
