@@ -70,7 +70,6 @@ int     flag[9][9]      = {0};																//flag配列
 bool    bFlag[9][9][9]  = {0};																//flag配列
 int     ans[9][9]       = {0};
 
-////////////////////mainルーチン
 int main(void){
 
 	char qnumber[5]		= {"\0"};
