@@ -78,26 +78,22 @@ int main(void){
     int  method1_time   = 0;
     int  method2_time   = 0;
 
-/* flag all 1**/
+    /* flag all 1**/
 	for(int v=0; v<9; v++){						//‚·‚×‚Ä‚Ìflag‚ð1 =511  Vertical
 		for(int h=0; h<9; h++){					//						Horizon
 			flag[v][h] = flag_all_one;
 		}
 	}
 
-/***** ‘I‘ð *********/
-
+    /***** ‘I‘ð *********/
 	std::cout<<"Input Question Number"<<std::endl;
 	std::cin>>qnumber;
 	sprintf_s(c_text, sizeof(c_text) , "%s%s", questionN, qnumber);
 	strcat(questionN , qnumber);
-	//std::cout<<questionN<<std::endl<<std::endl;
-	
 
     /** –â‘è“ü—Í**/
 
 	read_file( questionN );
-	//read_file( "question5.txt" );
 	
 	std::cout<<"question:"<<std::endl;
 	show( ans ,2 );
@@ -105,9 +101,7 @@ int main(void){
 	show( flag ,10);
 
     /*** “–‚Ä‚Í‚ß ***/
-
 	while( method1(&method1_time) || method2(&method2_time) ){}
-
 	std::cout<<"loop:"<<method1_time<<" "<<method2_time<<" -> "<<method1_time+method2_time<<std::endl;
 	
     /**** Œ‹‰Ê•\Ž¦ ****/
@@ -120,3 +114,4 @@ int main(void){
 
 	return 0;
 }
+

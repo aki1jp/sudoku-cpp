@@ -9,9 +9,9 @@
 
 
 //グローバル変数の定義
-extern int flag[9][9];		//flag配列
+extern int  flag[9][9];		//flag配列
 extern bool bFlag[9][9][9];	//flag配列
-extern int ans[9][9];
+extern int  ans[9][9];
 
 //10進数→2進数→flag number*
 int flag_number(int dex){
