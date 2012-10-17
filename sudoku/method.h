@@ -13,8 +13,8 @@ void flag_elase(int v, int h, int n);					//nŒ…–Ú vs h—ñ flagÁ‹
 int is_flag(int v, int h, int n);
 int cell_bcell( int box_number, int box_cell_number , int which );
 void read_file( /*void*/char* q );
-bool method1();
-bool method2();
+bool method1(int *time);
+bool method2(int *time);
 void back_track_method( int v , int h);
 
 

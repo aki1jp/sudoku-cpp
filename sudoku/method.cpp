@@ -31,37 +31,42 @@ int flag_number(int dex){
 //配列表示の関数 n桁
 void show( int hairetsu[9][9] , int n){				
 
-	for(int i=0; i < 9; i++){
-		for(int j=0; j < 9; j++){
-			if(n<9)		hairetsu[i][j]? std::cout<<std::setw(n)<<hairetsu[i][j]: std::cout<<std::setw(n)<<"_" ; //3項演算子を使用。 0ならば _を出力
-			//else		/*printf("",hairetsu[i][j])*/ std::cout<<std::setw(n)<<flag_number(hairetsu[i][j]);
-			else		std::cout<<std::setw(n)<<flag_number(hairetsu[i][j]);
+	for(int h=0; h < 9; h++){
+		for(int v=0; v < 9; v++){
+            if(n<9){
+                if(hairetsu[h][v]){
+                    std::cout<<std::setw(n)<<hairetsu[h][v];
+                }else{
+                    std::cout<<std::setw(n)<<"_" ; //3項演算子を使用。 0ならば _を出力
+                }
+            }else{
+                std::cout<<std::setw(n)<<flag_number(hairetsu[h][v]);
+            }
 		}
 		std::cout<<std::endl;
-		if( !(i%3 -2) && 4<n ) std::cout<<"-------------------------------------------------------------------------------------------"<<std::endl;
+		if( !(h%3 -2) && 4<n ) std::cout<<"-------------------------------------------------------------------------------------------"<<std::endl;
 	}
 	std::cout<<std::endl;
 }
 
 //縦v 横hの位置がどのボックスかを返却
 int box(int v, int h){ 										//cell→Box      vh
-	int x = 0;
-		if(h < 2.5)						x+=1;
-		else if((2.5< h) &&( h <5.5)) 	x+=2;
-		else if( 5.5 < h )				x+=3;
+	int box = 0;
+		if(h < 2.5)						box+=1;
+		else if((2.5< h) &&( h <5.5)) 	box+=2;
+		else if( 5.5 < h )				box+=3;
 			
-		if( v < 2.5 )					x+=0;
-		else if((2.5 < v)&&(v < 5.5) )	x+=3;
-		else if( 5.5 < v )				x+=6;
+		if( v < 2.5 )					box+=0;
+		else if((2.5 < v)&&(v < 5.5) )	box+=3;
+		else if( 5.5 < v )				box+=6;
 			
-	return (x);
+	return (box);
 }
 
 //BOX+cell2→ t or f
 bool is_box_in_cell(int box_number, int v1, int h1){
 
-	if( box(v1, h1) == box_number )		return true;
-	else 								return false;
+	return ( box(v1, h1) == box_number );
 }
 
 //その数値は影響範囲に存在するか　（ansの中で矛盾するか？YES->1）			確認 ok
@@ -156,7 +161,7 @@ void read_file( /*void*/char* q ){
 
 
 //解法1
-bool method1(){
+bool method1(int *time){
 	int s[9][3] = {0};                          //
 
 	for (int h=0; h<9; h++ ){								//h番目のBox
@@ -186,7 +191,8 @@ bool method1(){
 				influence_flag_elase(s[l][1], s[l][2], l+1);
 				ans[ s[l][1] ][ s[l][2] ] = l+1;
 				std::cout<<"method 1 : matrix "<<s[l][1]+1<<s[l][2]+1<<" -> "<<l+1<<std::endl;			//n桁目 v行 h列 flag消去
-				return ( true);
+                *time += 1;
+				return true;
 			}
 		}
 	}
@@ -194,7 +200,7 @@ bool method1(){
 }
 
 //解法2
-bool method2(){
+bool method2(int *time){
 //	flag2 = 0;											//method 2
 //	std::cout<<"method 2"<<std::endl;
 	for(int i=0; i<9; i++){
@@ -204,6 +210,7 @@ bool method2(){
 					influence_flag_elase(i, j, k+1);
 					ans[i][j] = k+1;
 					std::cout<<"method 2 : matrix "<<i+1<<j+1<<" -> "<<k+1<<std::endl;			//n桁目 v行 h列 flag消去
+                    *time += 1;
 					return (true);
 				}
 			}

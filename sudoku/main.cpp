@@ -73,8 +73,11 @@ int     ans[9][9]       = {0};
 int main(void){
 
 	char qnumber[5]		= {"\0"};
-	char questionN[10]	="question" ;
+	char questionN[10]	= "question" ;
 	char c_text[15]		= {"\0"};
+    int  method1_time   = 0;
+    int  method2_time   = 0;
+
 /* flag all 1**/
 	for(int v=0; v<9; v++){						//すべてのflagを1 =511  Vertical
 		for(int h=0; h<9; h++){					//						Horizon
@@ -82,16 +85,16 @@ int main(void){
 		}
 	}
 
-/***** 選択 *********/// char stringで詰まった。
+/***** 選択 *********/
 
 	std::cout<<"Input Question Number"<<std::endl;
 	std::cin>>qnumber;
 	sprintf_s(c_text, sizeof(c_text) , "%s%s", questionN, qnumber);
-//	strcat(questionN , qnumber);
-	std::cout<<questionN<<std::endl<<std::endl;
+	strcat(questionN , qnumber);
+	//std::cout<<questionN<<std::endl<<std::endl;
 	
 
-/** 問題入力**/
+    /** 問題入力**/
 
 	read_file( questionN );
 	//read_file( "question5.txt" );
@@ -101,26 +104,13 @@ int main(void){
 	std::cout<<"flag:"<<std::endl;
 	show( flag ,10);
 
-/*** 当てはめ ***/
+    /*** 当てはめ ***/
 
-	while( method1() || method2() ){}
+	while( method1(&method1_time) || method2(&method2_time) ){}
 
-	//int loop1 = 0,loop2 = 0;
-	//do{
-	//	do{
-	//		++loop1;
-	//	}while( method1() )	;
-	//	 ++loop2;
-	//}while( method2() ) ;
-	//
-	//
-	//std::cout<<"loop:"<<loop1<<" "<<loop2<<" -> "<<loop1+loop2<<std::endl;
+	std::cout<<"loop:"<<method1_time<<" "<<method2_time<<" -> "<<method1_time+method2_time<<std::endl;
 	
-//	while( method1() || method2() );																//method 1
-//																							↑
-//set_number:	if( method1() && method2() ) goto set_number;					//この考えがヒントになった
-
-/**** 結果表示 ****/
+    /**** 結果表示 ****/
 	std::cout<<std::endl<<"heuristic anser:"<<std::endl;
 	show( ans, 2);
 	std::cout<<"flag:"<<std::endl;
@@ -129,5 +119,4 @@ int main(void){
 	back_track_method(0,0);
 
 	return 0;
-
 }
