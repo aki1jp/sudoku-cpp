@@ -6,7 +6,7 @@
 //プロトタイプ宣言
 int     flag_number(int dex);
 void    show( int hairetsu[9][9] , int n);
-int     box(int v, int h);
+int     get_box(int v, int h);
 bool    box_cell_tf(int box_number, int v1, int h1);
 bool    number_tf(int v, int h, int n);
 void    flag_elase(int v, int h, int n);					//n桁目 v行 h列 flag消去

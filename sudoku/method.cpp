@@ -50,7 +50,7 @@ void show( int hairetsu[9][9] , int n){
 }
 
 //縦v 横hの位置がどのボックスかを返却
-int box(int v, int h){ 										//cell→Box      vh
+int get_box(int v, int h){ 										//cell→Box      vh
 	int box = 0;
 		if(h < 2.5)						box+=1;
 		else if((2.5< h) &&( h <5.5)) 	box+=2;
@@ -66,7 +66,7 @@ int box(int v, int h){ 										//cell→Box      vh
 //BOX+cell2→ t or f
 bool is_box_in_cell(int box_number, int v1, int h1){
 
-	return ( box(v1, h1) == box_number );
+	return ( get_box(v1, h1) == box_number );
 }
 
 //その数値は影響範囲に存在するか　（ansの中で矛盾するか？YES->1）			確認 ok
@@ -84,7 +84,7 @@ bool is_num_influence(int v, int h, int n){
 	}
 	for (int i=0; i<9 ;i++ ){							//is_box_in_cell
 		for(int j=0; j<9; j++){
-			if(( is_box_in_cell( box(v,h), i, j)) && ( ans[i][j] == n ) ){
+			if(( is_box_in_cell( get_box(v,h), i, j)) && ( ans[i][j] == n ) ){
 				return true;
 			}
 		}
@@ -106,7 +106,7 @@ void influence_flag_elase(int v, int h, int n){						//n桁目 v行 h列 flag消去
 	}
 	for (int i=0; i<9 ;i++ ){							//is_box_in_cell確認  ok
 		for(int j=0; j<9; j++){
-			if(( is_box_in_cell( box(v,h), i, j)) && ( (flag[i][j] >> (n-1) )%2 ) )
+			if(( is_box_in_cell( get_box(v,h), i, j)) && ( (flag[i][j] >> (n-1) )%2 ) )
 				flag[i][j] -=(1 << (n-1));
 		}
 	}
@@ -127,7 +127,7 @@ int cell_bcell( int box_number, int box_cell_number , int v_h ){
 
 	for( b[0]=0; b[0]<9; b[0]++){
 		for( b[1]=0; b[1]<9; b[1]++){
-			if( box( b[0] , b[1] ) == box_number ) { //ボックスの中だけ選択
+			if( get_box( b[0] , b[1] ) == box_number ) { //ボックスの中だけ選択
                 s++;                            //
 				if( s == box_cell_number ) {
 					return ( b[v_h] );
