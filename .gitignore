@@ -1,6 +1,17 @@
 #OS junk files
 [Tt]humbs.db
 *.DS_Store
+.DS_Store?
+._*
+.Spotlight-v100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+#Unix develop files
+*.a
+*.o
 
 #Visual Studio files
 *.[Oo]bj
